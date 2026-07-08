@@ -3,7 +3,7 @@
    ========================================================================== */
 
 /* Grids that stack on mobile ------------------------------------------------ */
-.grid.md\:grid-cols-2,
+/* .grid.md\:grid-cols-2,
 .grid.md\:grid-cols-3,
 .grid.md\:grid-cols-4,
 .grid.md\:grid-cols-5,
@@ -13,8 +13,8 @@
 .grid.lg\:grid-cols-5,
 .grid.lg\:grid-cols-12,
 .grid.sm\:grid-cols-2 {
-  /* grid-template-columns: minmax(0, 1fr); */
-}
+  grid-template-columns: minmax(0, 1fr);
+} */
 
 /* sm ≥ 640px */
 @media (min-width: 640px) {

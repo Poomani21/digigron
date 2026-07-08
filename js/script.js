@@ -76,7 +76,7 @@ function wireContactForm() {
 
     var lines = [];
 
-    ["name", "company", "email", "budget", "message"].forEach(function (k) {
+    ["name", "company", "email", "phone", "budget", "message"].forEach(function (k) {
       var v = data.get(k);
       if (v) {
         lines.push(k.charAt(0).toUpperCase() + k.slice(1) + ": " + v);
@@ -101,6 +101,7 @@ function wireContactForm() {
           name: data.get("name"),
           company: data.get("company"),
           email: data.get("email"),
+          phone: data.get("phone"),
           budget: data.get("budget"),
           services: services.join(", "),
           message: data.get("message")
