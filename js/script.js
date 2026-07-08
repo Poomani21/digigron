@@ -57,33 +57,98 @@
   }
 
   /* Contact form — client-side submit -------------------------------------- */
-  function wireContactForm() {
-    var form = document.querySelector("form[data-contact-form]");
-    if (!form) return;
-    var thanks = document.querySelector("[data-contact-thanks]");
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var data = new FormData(form);
-      var services = [];
-      form.querySelectorAll("input[type=checkbox]:checked").forEach(function (c) {
-        services.push(c.value || c.name);
-      });
-      var lines = [];
-      ["name", "company", "email", "budget", "message"].forEach(function (k) {
-        var v = data.get(k);
-        if (v) lines.push(k.charAt(0).toUpperCase() + k.slice(1) + ": " + v);
-      });
-      if (services.length) lines.push("Services: " + services.join(", "));
-      var email = (window.SITE_CONFIG && window.SITE_CONFIG.contact && window.SITE_CONFIG.contact.email) || "";
-      if (email) {
-        var subject = encodeURIComponent("New inquiry from " + (data.get("name") || "the DigiGron website"));
-        var body = encodeURIComponent(lines.join("\n"));
-        window.location.href = "mailto:" + email + "?subject=" + subject + "&body=" + body;
-      }
-      form.style.display = "none";
-      if (thanks) thanks.style.display = "block";
+function wireContactForm() {
+  var form = document.querySelector("form[data-contact-form]");
+  if (!form) return;
+
+  var thanks = document.querySelector("[data-contact-thanks]");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    var data = new FormData(form);
+
+    var services = [];
+
+    form.querySelectorAll("input[type=checkbox]:checked").forEach(function (c) {
+      services.push(c.value || c.name);
     });
-  }
+
+    var lines = [];
+
+    ["name", "company", "email", "budget", "message"].forEach(function (k) {
+      var v = data.get(k);
+      if (v) {
+        lines.push(k.charAt(0).toUpperCase() + k.slice(1) + ": " + v);
+      }
+    });
+
+    if (services.length) {
+      lines.push("Services: " + services.join(", "));
+    }
+
+    var messageBody = lines.join("\n");
+
+    /* ---------- Send Email using EmailJS ---------- */
+
+    var emailConfig = window.SITE_CONFIG.emailjs;
+
+    if (emailConfig) {
+      emailjs.send(
+        emailConfig.serviceId,
+        emailConfig.templateId,
+        {
+          name: data.get("name"),
+          company: data.get("company"),
+          email: data.get("email"),
+          budget: data.get("budget"),
+          services: services.join(", "),
+          message: data.get("message")
+        },
+        emailConfig.publicKey
+      )
+      .then(function () {
+
+        console.log("Email sent successfully");
+
+        /* ---------- Open WhatsApp ---------- */
+
+        var whatsapp =
+          (window.SITE_CONFIG &&
+            window.SITE_CONFIG.contact &&
+            window.SITE_CONFIG.contact.whatsapp) || "";
+
+        if (whatsapp) {
+
+          var whatsappMessage =
+            "New inquiry from DigiGron website\n\n" +
+            messageBody;
+
+          var whatsappURL =
+            "https://wa.me/" +
+            whatsapp +
+            "?text=" +
+            encodeURIComponent(whatsappMessage);
+
+          window.open(whatsappURL, "_blank");
+        }
+
+        form.style.display = "none";
+
+        if (thanks) {
+          thanks.style.display = "block";
+        }
+
+        form.reset();
+
+      })
+      .catch(function (error) {
+        console.error("EmailJS Error:", error);
+        alert("Sorry! Failed to send your message. Please try again.");
+      });
+    }
+  });
+}
 
   /* Reviews — localStorage-backed list ------------------------------------- */
   function wireReviews() {

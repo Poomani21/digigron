@@ -5,6 +5,8 @@ window.SITE_CONFIG = {
   contact: {
     email: "digigronofficial@gmail.com",
     phone: "+91 73050 20416",
+    // whatsapp: "919578777149",
+    whatsapp: "9173050 20416",
     address: "Coimbatore, Tamil Nadu - 641010",
   },
   social: {
@@ -22,4 +24,10 @@ window.SITE_CONFIG = {
     { href: "contact.html",   label: "Contact" },
   ],
   currentYear: new Date().getFullYear(),
+
+  emailjs: {
+  serviceId: "service_5e1jtfk",
+  templateId: "template_4f8kh0b",
+  publicKey: "bKFo29OE3n4oiUHFv"
+}
 };
