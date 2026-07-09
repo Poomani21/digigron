@@ -1,10 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>index.html</loc></url>
-  <url><loc>about.html</loc></url>
-  <url><loc>services.html</loc></url>
-  <url><loc>portfolio.html</loc></url>
-  <url><loc>pricing.html</loc></url>
-  <url><loc>reviews.html</loc></url>
-  <url><loc>contact.html</loc></url>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+
+<url>
+<loc>https://poomani21.github.io/digigron</loc>
+<priority>1.0</priority>
+</url>
+
+<url>
+<loc>https://poomani21.github.io/digigron/index.html</loc>
+</url>
+  
+<url>
+<loc>https://poomani21.github.io/digigron/about.html</loc>
+</url>
+
+<url>
+<loc>https://poomani21.github.io/digigron/services.html</loc>
+</url>
+
+<url>
+<loc>https://poomani21.github.io/digigron/contact.html</loc>
+</url>
+  
+<url>
+<loc>https://poomani21.github.io/digigron/portfolio.html</loc>
+</url>
+
+<url>
+<loc>https://poomani21.github.io/digigron/pricing.html</loc>
+</url>
+
+<url>
+<loc>https://poomani21.github.io/digigron/reviews.html</loc>
+</url>
+
 </urlset>
