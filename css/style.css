@@ -3,7 +3,7 @@
    Design tokens + utility classes mirroring the original Tailwind build.
    ========================================================================== */
 
-:root {
+/* :root {
   --radius: 0.5rem;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -35,6 +35,90 @@
     radial-gradient(at 0% 50%, oklch(0.55 0.18 290 / 0.1), transparent 60%);
   --shadow-glow: 0 0 60px -10px oklch(0.92 0.22 128 / 0.5);
   --shadow-card: 0 1px 0 0 oklch(1 0 0 / 0.06) inset, 0 30px 60px -20px oklch(0 0 0 / 0.6);
+} */
+
+:root {
+
+  --radius: 0.5rem;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-serif: "Instrument Serif", serif;
+
+
+  /* Background */
+  --background: #080b0a;
+  --foreground: #f5fff9;
+
+
+  /* Surface / Cards */
+  --surface: #101512;
+  --surface-foreground: #f5fff9;
+
+  --card: #101512;
+
+
+  /* Brand Colors */
+  --primary: #03f979;
+  --primary-foreground: #04120c;
+
+  --secondary: #08f6a2;
+  --secondary-foreground: #04120c;
+
+
+  /* Muted */
+  --muted: #17201b;
+  --muted-foreground: #94a99e;
+
+
+  /* Borders */
+  --border: rgba(255,255,255,0.08);
+  --input: rgba(255,255,255,0.12);
+
+
+  /* Focus */
+  --ring: #03f979;
+
+
+  /* Gradients */
+  --gradient-radial:
+    radial-gradient(
+      circle at 20% 0%,
+      rgba(3,249,121,0.18),
+      transparent 50%
+    );
+
+
+  --gradient-mesh:
+    radial-gradient(
+      at 80% 100%,
+      rgba(8,246,162,0.15),
+      transparent 60%
+    ),
+    radial-gradient(
+      at 0% 50%,
+      rgba(3,249,121,0.10),
+      transparent 60%
+    );
+
+
+  /* Shadows */
+  --shadow-glow:
+    0 0 60px -10px rgba(3,249,121,0.55);
+
+
+  --shadow-card:
+    0 1px 0 rgba(255,255,255,0.06) inset,
+    0 30px 60px -20px rgba(0,0,0,0.6);
+
 }
 
 @font-face {
