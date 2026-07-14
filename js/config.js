@@ -26,8 +26,15 @@ window.SITE_CONFIG = {
   currentYear: new Date().getFullYear(),
 
   emailjs: {
-  serviceId: "service_5e1jtfk",
-  templateId: "template_4f8kh0b",
-  publicKey: "bKFo29OE3n4oiUHFv"
+  // serviceId: "service_5e1jtfk",
+  serviceId: "service_5jpifse",
+  // templateId: "template_4f8kh0b",
+  templateId: "template_ng36wv4",
+  // publicKey: "bKFo29OE3n4oiUHFv"
+  publicKey: "ow0nudJ1Tnd5MwGAa"
 }
 };
+
+// Captcha keys
+// 6LeoGVMtAAAAAPQ8KpM78efHKm98qdY6aFR4GYDu site key
+// 6LeoGVMtAAAAAOrfMNRKcLISsqnb6sJ3u2Nv-pZJ scrate kry
