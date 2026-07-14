@@ -66,11 +66,12 @@ function wireContactForm() {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
+     // Check reCAPTCHA
     var captchaResponse = grecaptcha.getResponse();
 
     if (!captchaResponse) {
-        alert("Please verify that you are not a robot.");
-        return;
+      alert("Please verify that you are not a robot.");
+      return;
     }
 
     var data = new FormData(form);
