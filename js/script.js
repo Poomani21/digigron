@@ -53,7 +53,7 @@
   /* Footer year ------------------------------------------------------------ */
   function injectFooterYear() {
     var y = document.querySelector("[data-year]");
-    if (y) y.textContent = String(new Date().getFullYear());
+    if (y) y.textContent = "2025";
   }
 
   /* Contact form — client-side submit -------------------------------------- */

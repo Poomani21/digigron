@@ -10,7 +10,7 @@ window.SITE_CONFIG = {
     address: "Coimbatore, Tamil Nadu - 641010",
   },
   social: {
-    instagram: "#",
+    instagram: "https://www.instagram.com/digigron.official/",
     linkedin: "#",
     twitter: "#",
   },
