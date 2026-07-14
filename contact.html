@@ -65,10 +65,8 @@
   </div>
 </header>
 
-<div class="g-recaptcha"
-data-sitekey="6LeoGVMtAAAAAPQ8KpM78efHKm98qdY6aFR4GYDu">
-</div>
-<script src="https://www.google.com/recaptcha/api.js"></script>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-V31MEY995H"></script>
 <script>
@@ -151,6 +149,11 @@ gtag('config', 'G-V31MEY995H');
       <label class="text-xs uppercase tracking-widest text-muted-foreground">What are you trying to grow?</label>
       <textarea name="message" rows="5" required class="mt-2 w-full bg-background border border-border rounded-xl p-4 outline-none focus:border-primary" placeholder="A sentence or two is plenty."></textarea>
     </div>
+
+    <div class="g-recaptcha"
+     data-sitekey="6LeoGVMtAAAAAPQ8KpM78efHKm98qdY6aFR4GYDu">
+    </div>
+
     <button class="w-full rounded-full bg-primary text-primary-foreground py-4 font-medium hover:opacity-90 transition">Send inquiry →</button>
   </form>
 

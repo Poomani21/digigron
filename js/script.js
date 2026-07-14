@@ -66,6 +66,13 @@ function wireContactForm() {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
+    var captchaResponse = grecaptcha.getResponse();
+
+    if (!captchaResponse) {
+        alert("Please verify that you are not a robot.");
+        return;
+    }
+
     var data = new FormData(form);
 
     var services = [];
@@ -112,6 +119,7 @@ function wireContactForm() {
             timeStyle: "short",
             hour12: true
           }),
+          'g-recaptcha-response': grecaptcha.getResponse()
         },
         emailConfig.publicKey
       )
