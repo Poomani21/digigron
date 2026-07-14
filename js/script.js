@@ -104,7 +104,14 @@ function wireContactForm() {
           phone: data.get("phone"),
           budget: data.get("budget"),
           services: services.join(", "),
-          message: data.get("message")
+          message: data.get("message"),
+          // Converts ISO string to 12-hour Indian Standard Time (IST)
+          time: new Date().toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata",
+            dateStyle: "medium",
+            timeStyle: "short",
+            hour12: true
+          }),
         },
         emailConfig.publicKey
       )
