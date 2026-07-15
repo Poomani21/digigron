@@ -219,9 +219,9 @@ function wireContactForm() {
         return '<li class="rounded-2xl border border-border bg-surface/50 p-7 shadow-card">' +
           '<div class="flex items-center justify-between"><div class="flex gap-0.5 text-primary">' + starsHtml + '</div>' +
           '<time class="text-xs text-muted-foreground">' + escapeHtml(date) + '</time></div>' +
-          '<blockquote class="mt-4 font-serif-display text-xl leading-snug text-balance">&ldquo;' + escapeHtml(r.text) + '&rdquo;</blockquote>' +
-          '<div class="mt-5 pt-5 border-t border-border"><div class="font-display">' + escapeHtml(r.name) + '</div>' +
-          (r.role ? '<div class="text-sm text-muted-foreground">' + escapeHtml(r.role) + '</div>' : '') +
+          '<blockquote class="mt-4 font-serif-display text-xl leading-snug text-balance" style="overflow-wrap:anywhere; word-break:break-word;">&ldquo;' + escapeHtml(r.text) + '&rdquo;</blockquote>' +
+          '<div class="mt-5 pt-5 border-t border-border"><div class="font-display" style="overflow-wrap:anywhere; word-break:break-word;">' + escapeHtml(r.name) + '</div>' +
+          (r.role ? '<div class="text-sm text-muted-foreground" style="overflow-wrap:anywhere; word-break:break-word;">' + escapeHtml(r.role) + '</div>' : '') +
           '</div></li>';
       }).join("");
     }
