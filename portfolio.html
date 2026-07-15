@@ -55,9 +55,20 @@
       <a href="reviews.html"   data-nav-link class="text-muted-foreground hover:text-foreground transition-colors">Reviews</a>
       <a href="contact.html"   data-nav-link class="text-muted-foreground hover:text-foreground transition-colors">Contact</a>
     </nav>
+
+     <!-- Sign In Button -->
+    <a href="signup.html" id="signInButton" style="display: none;"
+       class="header-cta items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90 transition">
+        Sign In
+    </a>
+
     <a href="contact.html" class="header-cta items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90 transition">
       Get a quote →
     </a>
+     <!-- nav html call -->
+       <div id="navbar" style="display: none;"></div>
+       <script type="module" src="js/include.js"></script>
+
     <button class="menu-btn" aria-label="Menu" aria-expanded="false">
       <svg class="icon-menu" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
       <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
