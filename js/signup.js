@@ -104,10 +104,10 @@ window.handleSignIn = async function (e) {
         const user = userCredential.user;
 
         // Explicit gateway check to see if email validation is complete
-        if (!user.emailVerified) {
-            displayMessage('signin-msg', 'Access Denied. You must click the verification link in your email inbox.');
-            return;
-        }
+        // if (!user.emailVerified) {
+        //     displayMessage('signin-msg', 'Access Denied. You must click the verification link in your email inbox.');
+        //     return;
+        // }
 
         // If they are verified, set database value to true and route inside index.html
         await setDoc(doc(db, "users", user.uid), {
@@ -121,8 +121,9 @@ window.handleSignIn = async function (e) {
         }, 1500);
 
     } catch (error) {
-        displayMessage('signin-msg', error.message.replace('Firebase: ', ''));
-    }
+        // displayMessage('signin-msg', error.message.replace('Firebase: ', ''));
+        displayMessage('signin-msg', 'The email or password is incorrect.');   
+     }
 };
 
 // PASSWORD RECOVERY HANDLER
@@ -152,18 +153,18 @@ onAuthStateChanged(auth, (user) => {
         document.getElementById("signupBtn")?.style.setProperty("display", "none");
 
         document.getElementById("profileDropdown")?.style.setProperty("display", "block");
-         document.getElementById("navbar").style.setProperty("display", "block");
-                 document.getElementById("signInButton").style.setProperty("display", "none");
+        //  document.getElementById("navbar").style.setProperty("display", "block");
+                //  document.getElementById("signInButton").style.setProperty("display", "none");
 
 
     } else {
 
         // User not logged in
         console.log("No user");
-        document.getElementById("navbar").style.setProperty("display", "none");
+        // document.getElementById("navbar").style.setProperty("display", "none");
         document.getElementById("loginBtn")?.style.setProperty("display", "block");
         document.getElementById("signupBtn")?.style.setProperty("display", "block");
-        document.getElementById("signInButton").style.setProperty("display", "block");
+        // document.getElementById("signInButton").style.setProperty("display", "block");
 
 
         document.getElementById("profileDropdown")?.style.setProperty("display", "none");

@@ -62,10 +62,16 @@ onAuthStateChanged(auth, (user) => {
                         else {
 
 
-                            document.getElementById("verifyStatus").innerHTML =
-                                `
-                <span class="notverified">
-                ✖ Email Not Verified
+                //             document.getElementById("verifyStatus").innerHTML =
+                //                 `
+                // <span class="notverified">
+                // ✖ Email Not Verified
+                // </span>
+                // `;
+                 document.getElementById("verifyStatus").innerHTML =
+                `
+                <span class="verified">
+                ✔ Verified Account
                 </span>
                 `;
 

@@ -1,10 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Access Gateway</title>
-    <style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SignIn | SignUp | Reset  — Digigron | Digital Marketing & Web Development</title>
+
+
+  <meta name="description"
+    content="Digigron provides web development, digital marketing, SEO, branding, and business growth solutions." />
+  <meta name="keywords" content="digital marketing, web development, SEO, website design, Digigron">
+  <meta name="author" content="DigiGron" />
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="canonical" href="https://poomani21.github.io/digigron/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Instrument+Serif&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Digigron | Digital Marketing & Web Development">
+  <meta name="twitter:description"
+    content="Digigron provides web development, digital marketing, SEO, branding, and business growth solutions.">
+  <meta name="twitter:image" content="https://poomani21.github.io/digigron/images/og-image.png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Digigron | Digital Marketing & Web Development">
+  <meta property="og:description"
+    content="Digigron provides web development, digital marketing, SEO, branding, and business growth solutions.">
+  <meta property="og:url" content="https://poomani21.github.io/digigron/">
+  <meta property="og:site_name" content="Digigron">
+
+  <meta property="og:image" content="https://poomani21.github.io/digigron/images/og-image.png">
+  <meta property="og:image:secure_url" content="https://poomani21.github.io/digigron/images/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+
+  <meta property="og:image:alt" content="Digigron Logo">
+</head>
+
+<style>
         :root {
             --primary-neon: #03f979;
             --secondary-neon: #08f6a2;
@@ -29,8 +69,8 @@
             justify-content: center;
             align-items: center;
             background: radial-gradient(circle at 10% 20%, rgba(3, 249, 121, 0.08) 0%, transparent 40%),
-                        radial-gradient(circle at 90% 80%, rgba(8, 246, 162, 0.08) 0%, transparent 40%),
-                        var(--bg-dark);
+                radial-gradient(circle at 90% 80%, rgba(8, 246, 162, 0.08) 0%, transparent 40%),
+                var(--bg-dark);
             overflow-x: hidden;
         }
 
@@ -58,8 +98,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .auth-card h2 {
@@ -172,131 +219,180 @@
             border: 1px solid rgba(3, 249, 121, 0.3);
             color: var(--primary-neon);
         }
-        
+
         .reset-option {
             text-align: right;
             margin-top: -12px;
             margin-bottom: 18px;
         }
+
         .reset-option a {
             font-size: 13px;
             color: var(--text-muted);
             text-decoration: none;
             cursor: pointer;
         }
+
         .reset-option a:hover {
             color: var(--primary-neon);
         }
-.back-home {
-    width: 100%;
-    text-align: left;
-    margin-bottom: 25px;
-}
+
+        .back-home {
+            width: 100%;
+            text-align: left;
+            margin-bottom: 25px;
+        }
 
 
-.back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
 
-    padding: 7px 14px;
+            padding: 7px 14px;
 
-    border-radius: 999px;
+            border-radius: 999px;
 
-    background: #03f979;
-    color: #000;
+            background: #03f979;
+            color: #000;
 
-    text-decoration: none;
+            text-decoration: none;
 
-    font-size: 13px;
-    font-weight: 600;
+            font-size: 13px;
+            font-weight: 600;
 
-    transition: 0.3s;
-}
-
-
-.back-btn:hover {
-    opacity: 0.85;
-}
+            transition: 0.3s;
+        }
 
 
-/* Mobile */
-@media(max-width:480px){
-
-    .back-home{
-        text-align:center;
-        margin-bottom:20px;
-    }
+        .back-btn:hover {
+            opacity: 0.85;
+        }
 
 
-    .back-btn{
+        /* Mobile */
+        @media(max-width:480px) {
 
-        width:auto;
-        padding:8px 15px;
-        font-size:12px;
+            .back-home {
+                text-align: center;
+                margin-bottom: 20px;
+            }
 
-    }
 
-}
+            .back-btn {
 
+                width: auto;
+                padding: 8px 15px;
+                font-size: 12px;
+
+            }
+
+        }
     </style>
-</head>
+
 <body>
 
-    
-   <div class="auth-container">
+
+    <div class="auth-container">
 
 
-    <div class="auth-card active" id="signin-card">
+        <div class="auth-card active" id="signin-card">
 
-        <!-- Back Home Button -->
-        <div class="back-home">
-            <a href="index.html" class="back-btn">
-                ← Back to Home
-            </a>
-        </div>
+            <!-- Back Home Button -->
+            
 
+            <h2>Welcome Back</h2>
+            <p class="subtitle">Sign in to access your account</p>
+            <div class="status-msg" id="signin-msg"></div>
 
-        <h2>Welcome Back</h2>
-        <p class="subtitle">Sign in to access your account</p>
-
-        <div class="status-msg" id="signin-msg"></div>
-
-        <form id="signin-form" onsubmit="handleSignIn(event)">
-
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" id="signin-email" required placeholder="name@domain.com">
+            <form id="signin-form" onsubmit="handleSignIn(event)">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="signin-email" required placeholder="name@domain.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="signin-password" required placeholder="••••••••">
+                </div>
+                <!-- <div class="reset-option">
+                    <a onclick="switchCard('reset-card')">Forgot Password?</a>
+                </div> -->
+                <button type="submit" class="btn-submit">Sign In</button>
+            </form>
+            <div class="auth-switch">
+                Don't have an account? <a onclick="switchCard('signup-card')">Sign Up</a>
             </div>
 
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="signin-password" required placeholder="••••••••">
-            </div>
-
-            <div class="reset-option">
-                <a onclick="switchCard('reset-card')">
-                    Forgot Password?
+            <div class="auth-switch">
+                <a href="index.html">
+                    ← Back to Home
                 </a>
             </div>
 
-            <button type="submit" class="btn-submit">
-                Sign In
-            </button>
+        </div>
 
-        </form>
+        <div class="auth-card" id="signup-card">
+            <h2>Create Account</h2>
+            <p class="subtitle">Join the Digigron today</p>
+            <div class="status-msg" id="signup-msg"></div>
+
+            <form id="signup-form" onsubmit="handleSignUp(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="signup-name" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="signup-email" required placeholder="name@domain.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="signup-password" required placeholder="Minimum 6 characters">
+                </div>
+                <button type="submit" class="btn-submit">Register</button>
+            </form>
+            <div class="auth-switch">
+                Already registered? <a onclick="switchCard('signin-card')">Sign In</a>
+            </div>
+
+            <div class="auth-switch">
+                <a href="index.html">
+                    ← Back to Home
+                </a>
+            </div>
 
 
-        <div class="auth-switch">
-            Don't have an account?
-            <a onclick="switchCard('signup-card')">
-                Sign Up
-            </a>
+        </div>
+
+        <div class="auth-card" id="reset-card">
+            <h2>Reset Password</h2>
+            <p class="subtitle">Enter your email to receive a recovery link</p>
+            <div class="status-msg" id="reset-msg"></div>
+
+            <form id="reset-form" onsubmit="handlePasswordReset(event)">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="reset-email" required placeholder="name@domain.com">
+                </div>
+                <button type="submit" class="btn-submit">Send Reset Link</button>
+            </form>
+            <div class="auth-switch">
+                Remembered it? <a onclick="switchCard('signin-card')">Back to Sign In</a>
+            </div>
+
+            <div class="auth-switch">
+                <a href="index.html">
+                    ← Back to Home
+                </a>
+            </div>
+
         </div>
 
     </div>
 
-  <script type="module" src="js/signup.js"></script>
-   
+
+    <script type="module" src="js/signup.js"></script>
+
 </body>
+
 </html>
