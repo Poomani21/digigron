@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://poomani21.github.io/digigron/sitemap.xml
+Sitemap: https://digigron.in/sitemap.xml
+
