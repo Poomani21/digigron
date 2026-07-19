@@ -162,7 +162,7 @@ function exportTableToCSV() {
     const downloadLink = document.createElement("a");
     
     downloadLink.setAttribute("href", url);
-    downloadLink.setAttribute("download", `comprehensive_users_export_${Date.now()}.csv`);
+    downloadLink.setAttribute("download", `digigron_users_${Date.now()}.csv`);
     downloadLink.style.visibility = "hidden";
     
     document.body.appendChild(downloadLink);

@@ -10,7 +10,9 @@ import {
 import { 
     getFirestore, 
     doc, 
-    getDoc 
+    getDoc,
+    setDoc,
+    serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const db = getFirestore(); // Initialize Firestore database instance
@@ -29,6 +31,31 @@ const profileDropdown =
 const logoutBtn =
     document.getElementById("logoutBtn");
 
+// Helper function to evaluate and toggle admin visibility safely
+async function checkAdminVisibility(currentUser) {
+    const adminLink = document.getElementById("adminLink");
+    if (!adminLink || !currentUser) return;
+
+    try {
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            console.log("userData checked:", userData);
+            if (userData.role === "admin") {
+                adminLink.style.display = "block"; 
+            } else {
+                adminLink.style.display = "none";
+            }
+        } else {
+            adminLink.style.display = "none";
+        }
+    } catch (error) {
+        console.error("Error reading administrative role permissions:", error);
+        adminLink.style.display = "none";
+    }
+}
 
 onAuthStateChanged(auth, async (user) => { // ADDED: "async" keyword so we can use "await getDoc"
 
@@ -105,30 +132,11 @@ onAuthStateChanged(auth, async (user) => { // ADDED: "async" keyword so we can u
         // =========================================================================
         // CORRECTED: Safe structural role query implementation
         // =========================================================================
-        try {
-            const userDocRef = doc(db, "users", user.uid);
-            const userDocSnap = await getDoc(userDocRef);
-
-            if (userDocSnap.exists()) {
-                const userData = userDocSnap.data(); // Defines userData from Firestore
-
-                // Enforced visibility condition matching your layout requirements
-                if (userData.role === "admin") {
-                    // Show the management link if verified as an admin
-                    if (adminLink) adminLink.style.display = "block"; 
-                } else {
-                    // Hide the link if the profile role does not match
-                    if (adminLink) adminLink.style.display = "none";
-                }
-            } else {
-                // Hide link if user data doesn't exist in Firestore collection yet
-                if (adminLink) adminLink.style.display = "none";
-            }
-        } catch (error) {
-            console.error("Error reading administrative role permissions:", error);
-            if (adminLink) adminLink.style.display = "none";
-        }
+        await checkAdminVisibility(user);
         // =========================================================================
+
+        syncUserPresence(user);
+
 
     }
 
@@ -145,7 +153,7 @@ onAuthStateChanged(auth, async (user) => { // ADDED: "async" keyword so we can u
         document.getElementById("signupBtn")?.style.setProperty("display", "block");
 
         document.getElementById("profileDropdown")?.style.setProperty("display", "none");
-
+        if (adminLink) adminLink.style.display = "none";
 
 
         // // Protect pages
@@ -192,3 +200,38 @@ logoutBtn.onclick = async () => {
 
 
 };
+
+/**
+ * Syncs the client's localized current location up to Firestore dynamically
+ */
+
+async function syncUserPresence(user) {
+    if (!user) return;
+    
+    // Fallback to window.location.pathname explicitly to prevent context capture failures
+    const path = window.location.pathname || "/";
+    
+    const userRef = doc(db, "users", user.uid);
+    try {
+        await setDoc(userRef, {
+            uid: user.uid, // Explicitly keep the ID mapped
+            currentPage: path, 
+            lastActive: serverTimestamp(),
+            online: true
+        }, { merge: true });
+    } catch (error) {
+        console.error("Error syncing user presence:", error);
+    }
+}
+
+// Proactive background presence synchronization loop for active admin sessions
+setInterval(() => {
+    if (auth.currentUser) {
+        const userDocRef = doc(db, "users", auth.currentUser.uid);
+        getDoc(userDocRef).then((snap) => {
+            if (snap.exists() && snap.data().role === "admin") {
+                syncUserPresence(auth.currentUser);
+            }
+        });
+    }
+}, 30000);
