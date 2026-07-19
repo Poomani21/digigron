@@ -288,6 +288,35 @@
             }
 
         }
+
+        /* Spinner Animation Styles (Brand-Matching Neon Green) */
+        .btn-submit {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .loader {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #050505; /* Matches text color */
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: none; /* Hidden by default */
+            animation: rotation 0.6s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
     </style>
 
 <body>
@@ -349,7 +378,10 @@
                     <label>Password</label>
                     <input type="password" id="signup-password" required placeholder="Minimum 6 characters">
                 </div>
-                <button type="submit" class="btn-submit">Register</button>
+                <button type="submit" class="btn-submit" id="signup-btn">
+                    <span class="loader" id="signup-loader"></span>
+                    <span id="signup-btn-text">Register</span>
+                </button>            
             </form>
             <div class="auth-switch">
                 Already registered? <a onclick="switchCard('signin-card')">Sign In</a>

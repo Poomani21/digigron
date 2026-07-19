@@ -1,10 +1,8 @@
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
     getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
-    sendEmailVerification,
     sendPasswordResetEmail,
     updateProfile,
     onAuthStateChanged,
@@ -15,19 +13,9 @@ import {
     getFirestore,
     doc,
     setDoc,
+    getDoc,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-// Firebase Configuration (Configured to your project)
-// const firebaseConfig = {
-//     apiKey: "AIzaSyBBVvK-a5fxUlcr2fXhXoZ4RjB49iMpS6A",
-//     authDomain: "my-school-management-sys-c82e6.firebaseapp.com",
-//     projectId: "my-school-management-sys-c82e6",
-//     storageBucket: "my-school-management-sys-c82e6.firebasestorage.app",
-//     messagingSenderId: "712033170172",
-//     appId: "1:712033170172:web:1839d8d238b7ce08c85d79",
-//     measurementId: "G-7B4EPCVN26"
-// };
 
 const firebaseConfig = {
     apiKey: "AIzaSyAYOzQ-pX-5pXBUnxyhDOn8xoJ5DUj2y6o",
@@ -37,8 +25,8 @@ const firebaseConfig = {
     messagingSenderId: "643414873706",
     appId: "1:643414873706:web:ee78812678b40ea2021c13",
     measurementId: "G-5T87E1TS5H"
-  };
-  
+};
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -57,53 +45,70 @@ window.switchCard = function (cardId) {
 // Status Message Helper
 function displayMessage(elementId, message, isSuccess = false) {
     const container = document.getElementById(elementId);
+    if (!container) return;
     container.textContent = message;
     container.className = isSuccess ? 'status-msg success' : 'status-msg error';
 }
 
-// SIGN UP HANDLER (Creates user, saves unverified profile in DB, and prompts check inbox)
+// SIGN UP HANDLER WITH SPINNER IMPLEMENTATION
 window.handleSignUp = async function (e) {
     e.preventDefault();
+    
+    // UI Elements
+    const signUpBtn = document.getElementById('signup-btn');
+    const signUpLoader = document.getElementById('signup-loader');
+    const signUpBtnText = document.getElementById('signup-btn-text');
+    
     const name = document.getElementById('signup-name').value;
     const email = document.getElementById('signup-email').value;
     const password = document.getElementById('signup-password').value;
 
     try {
-        // 1. Create auth user
+        // 1. Activate loading state animation
+        signUpBtn.disabled = true;
+        signUpLoader.style.display = 'inline-block';
+        signUpBtnText.textContent = 'Processing...';
+        
+        console.log("Creating auth user...");
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
+        console.log("Auth user created:", user.uid);
 
-        // 2. Set Local Display Name Profile
-        await updateProfile(user, { displayName: name });
-
-        // 3. Save User metadata to firestore as UNVERIFIED (emailVerified: false)
+        console.log("Writing to Firestore...");
+        // Wait completely for the database write to finish successfully
         await setDoc(doc(db, "users", user.uid), {
             uid: user.uid,
             fullName: name,
-            email: email,
+            email: user.email,
+            role: "user",
             createdAt: serverTimestamp(),
-            emailVerified: false
+            lastLogin: serverTimestamp(),
+            online: true,
+            emailVerified: true
         });
 
-        // 4. Send the verification Email
-        await sendEmailVerification(user);
+        console.log("Firestore write successful");
+        
+        // Update auth profile name
+        await updateProfile(user, { displayName: name });
 
-        // Display success prompt, do NOT redirect to index.html yet
-        displayMessage('signup-msg', 'Account pending verification! Please check your email inbox to verify your account.', true);
-        document.getElementById('signup-form').reset();
+        displayMessage('signin-msg', 'Account created successfully!', true);
 
-        // Switch back to Sign In view after 4 seconds so they can login after verification
-        setTimeout(() => {
-            switchCard('signin-card');
-            displayMessage('signin-msg', 'Please verify your email link first, then log in here.', true);
-        }, 4000);
+        // Redirect to target index dashboard
+        window.location.href = "index.html";
 
     } catch (error) {
+        console.error("Signup Error:", error);
         displayMessage('signup-msg', error.message.replace('Firebase: ', ''));
+        
+        // 2. Clear loader state safely if registration fails
+        signUpBtn.disabled = false;
+        signUpLoader.style.display = 'none';
+        signUpBtnText.textContent = 'Register';
     }
 };
 
-// SIGN IN HANDLER (Blocks unverified users, Updates Firestore once verified, Redirects)
+// SIGN IN HANDLER
 window.handleSignIn = async function (e) {
     e.preventDefault();
     const email = document.getElementById('signin-email').value;
@@ -113,25 +118,20 @@ window.handleSignIn = async function (e) {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Explicit gateway check to see if email validation is complete
-        // if (!user.emailVerified) {
-        //     displayMessage('signin-msg', 'Access Denied. You must click the verification link in your email inbox.');
-        //     return;
-        // }
-
-        // If they are verified, set database value to true and route inside index.html
         await setDoc(doc(db, "users", user.uid), {
-            emailVerified: true
+            emailVerified: true,
+            lastLogin: serverTimestamp(),
+            online: true
         }, { merge: true });
 
-        displayMessage('signin-msg', 'Verification verified. Granting secure access...', true);
+        displayMessage('signin-msg', 'Access granted. Redirecting...', true);
 
         setTimeout(() => {
             window.location.href = 'index.html';
-        }, 1500);
+        }, 1200);
 
     } catch (error) {
-        // displayMessage('signin-msg', error.message.replace('Firebase: ', ''));
+        console.error("SignIn Error:", error);
         displayMessage('signin-msg', 'The email or password is incorrect.');   
      }
 };
@@ -150,63 +150,42 @@ window.handlePasswordReset = async function (e) {
     }
 };
 
-// Check login status
+// Check login status observer
 onAuthStateChanged(auth, (user) => {
-
     if (user) {
-        // User logged in
         console.log("Logged in:", user.email);
 
-         window.location.href = "index.html";
+        // FIX: Only auto-redirect if the user visits the page cold, NOT during form execution
+        const isCurrentlySigningUp = document.getElementById('signup-card')?.classList.contains('active');
+        const isCurrentlySigningIn = document.getElementById('signin-card')?.classList.contains('active');
+        
+        // If they are just loading the page and are already logged in, send them to index
+        if (!isCurrentlySigningUp && !isCurrentlySigningIn && !location.pathname.includes("index.html")) {
+            window.location.href = "index.html";
+        }
 
         document.getElementById("loginBtn")?.style.setProperty("display", "none");
         document.getElementById("signupBtn")?.style.setProperty("display", "none");
-
         document.getElementById("profileDropdown")?.style.setProperty("display", "block");
-        //  document.getElementById("navbar").style.setProperty("display", "block");
-                //  document.getElementById("signInButton").style.setProperty("display", "none");
-
-
     } else {
-
-        // User not logged in
-        console.log("No user");
-        // document.getElementById("navbar").style.setProperty("display", "none");
+        console.log("No user session active");
         document.getElementById("loginBtn")?.style.setProperty("display", "block");
         document.getElementById("signupBtn")?.style.setProperty("display", "block");
-        // document.getElementById("signInButton").style.setProperty("display", "block");
-
-
         document.getElementById("profileDropdown")?.style.setProperty("display", "none");
-
-
-        // // Protect pages
-        // if(
-        //     !location.pathname.includes("signup.html") &&
-        //     !location.pathname.includes("signup.html")
-        // ){
-        //     window.location.href = "signup.html";
-        // }
     }
-
 });
 
 // Logout function
-window.logoutUser = function(){
-
-    signOut(auth)
-    .then(()=>{
-
-        console.log("Logout success");
-
+window.logoutUser = async function () {
+    try {
+        if (auth.currentUser) {
+            await setDoc(doc(db, "users", auth.currentUser.uid), {
+                online: false
+            }, { merge: true });
+        }
+        await signOut(auth);
         window.location.href = "signup.html";
-
-    })
-    .catch((error)=>{
-        console.log(error);
-    });
-
-}
-
-
-
+    } catch (error) {
+        console.error("Logout Error:", error);
+    }
+};

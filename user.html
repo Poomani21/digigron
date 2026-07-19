@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Management Console - Users</title>
+    <style>
+      :root {
+    /* Color Palette (Deep Dark Theme with Requested Branding Accents) */
+    --bg-main: #0a0c10;
+    --bg-card: #12161f;
+    --bg-hover: #1a202c;
+    --border-color: #242f41;
+    
+    --brand-primary: #03f979;
+    --brand-secondary: #08f6a2;
+    
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --text-dark: #000000;
+}
+
+/* Reset & Base System Layout */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    padding: 16px 12px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Executive Header Actions (Highly Responsive Component) */
+.header-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.btn-export {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: var(--brand-primary);
+    border: 1px solid var(--brand-primary);
+    padding: 10px 18px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%; /* Default mobile behavior */
+}
+
+.btn-export:hover {
+    background-color: var(--brand-primary);
+    color: var(--text-dark);
+    box-shadow: 0 0 16px rgba(3, 249, 121, 0.25);
+}
+
+/* Responsive Table Wrapper (Prevents Page Breaking on Mobile Devices) */
+.table-container {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow-x: auto; /* Activates internal swipe scrolling for small displays */
+    -webkit-overflow-scrolling: touch;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.875rem;
+    min-width: 900px; /* Enhanced structural baseline for wider column count */
+}
+
+th {
+    background-color: rgba(36, 47, 65, 0.4);
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+    white-space: nowrap;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover td {
+    background-color: var(--bg-hover);
+}
+
+/* Precise System Typography Formatting */
+td.font-mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: var(--text-muted);
+    font-size: 0.825rem;
+}
+
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.813rem;
+    font-weight: 500;
+    color: var(--brand-secondary);
+}
+
+.badge-status::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--brand-secondary);
+    box-shadow: 0 0 8px var(--brand-secondary);
+}
+
+/* ==========================================
+   MEDIA QUERIES (Desktop Restructuring)
+   ========================================== */
+
+/* Tablet & Intermediate Scaling */
+@media (min-width: 640px) {
+    body {
+        padding: 32px 20px;
+    }
+    
+    .header-actions {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .btn-export {
+        width: auto; /* Inline scaling for larger screens */
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Pro Desktop Configuration optimization */
+@media (min-width: 1024px) {
+    body {
+        padding: 40px 24px;
+    }
+    
+    th, td {
+        padding: 16px 20px; /* Enhanced data breathing room for desktop views */
+    }
+}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-actions">
+            <h2>Registered Users</h2>
+            <button id="exportBtn" class="btn-export">Export to CSV</button>
+        </div>
+
+        <div class="table-container">
+            <table id="usersTable">
+                <thead>
+                    <tr>
+                        <th>UID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Current Page</th>
+                        <th>Last Active</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamic Rows Insertion -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="module" src="js/user.js"></script>
+</body>
+</html>
