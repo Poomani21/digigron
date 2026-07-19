@@ -18,7 +18,7 @@ const auth = getAuth();
 const db = getFirestore();
 
 let allUsersCache = []; 
-let activeSnapshotListener = null; // Track the stream so we can clear it if needed
+let activeSnapshotListener = null;
 
 /**
  * Syncs the client's localized current location up to Firestore dynamically
@@ -82,7 +82,6 @@ function renderUsersTable(usersList) {
  * Handles initialization of the data pipeline only for verified admins
  */
 function initializeAdminStream() {
-    // Prevent duplicate listeners from stacking up
     if (activeSnapshotListener) return;
 
     const usersCollectionRef = collection(db, "users");
@@ -161,24 +160,27 @@ function exportTableToCSV() {
 }
 
 // =========================================================================
-// ENFORCED SECURITY ORCHESTRATION
+// ENFORCED SECURITY ORCHESTRATION WITH UI HANDLING
 // =========================================================================
 
 onAuthStateChanged(auth, async (user) => {
+    const exportBtn = document.getElementById("exportBtn");
+
     if (user) {
         try {
-            // 1. Fetch the user's document directly to inspect their system role
             const userDocRef = doc(db, "users", user.uid);
             const userDocSnap = await getDoc(userDocRef);
 
             if (userDocSnap.exists() && userDocSnap.data().role === "admin") {
-                // User is verified as an admin -> authorize presence and start the global data stream
+                // User is Admin -> Show Export Button, sync presence, run stream
+                if (exportBtn) exportBtn.style.display = "inline-flex";
                 syncUserPresence(user);
                 initializeAdminStream();
             } else {
-                // Authenticated, but missing correct permissions
+                // User is NOT Admin -> Hide Export Button, disconnect stream
+                if (exportBtn) exportBtn.style.display = "none";
                 if (activeSnapshotListener) {
-                    activeSnapshotListener(); // Disconnect listener
+                    activeSnapshotListener();
                     activeSnapshotListener = null;
                 }
                 allUsersCache = [];
@@ -186,10 +188,12 @@ onAuthStateChanged(auth, async (user) => {
             }
         } catch (err) {
             console.error("Error inspecting user role attributes:", err);
+            if (exportBtn) exportBtn.style.display = "none";
             showAccessDenied("Error validating security credentials.");
         }
     } else {
-        // Disconnect streams and clear UI when completely logged out
+        // Not Logged In -> Hide Export Button, disconnect stream
+        if (exportBtn) exportBtn.style.display = "none";
         if (activeSnapshotListener) {
             activeSnapshotListener();
             activeSnapshotListener = null;
@@ -204,7 +208,6 @@ document.getElementById("exportBtn").addEventListener("click", exportTableToCSV)
 // Proactive background presence synchronization loop for active admin sessions
 setInterval(() => {
     if (auth.currentUser) {
-        // Double check state mapping to avoid executing unauthenticated pings
         const userDocRef = doc(db, "users", auth.currentUser.uid);
         getDoc(userDocRef).then((snap) => {
             if (snap.exists() && snap.data().role === "admin") {
