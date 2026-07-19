@@ -23,15 +23,26 @@ let activeSnapshotListener = null;
 /**
  * Syncs the client's localized current location up to Firestore dynamically
  */
+/**
+ * Syncs the client's localized current location up to Firestore dynamically
+ */
 async function syncUserPresence(user) {
     if (!user) return;
     
+    // Fallback to window.location.pathname explicitly to prevent context capture failures
+    const path = window.location.pathname || "/";
+    
     const userRef = doc(db, "users", user.uid);
-    await setDoc(userRef, {
-        currentPage: location.pathname, 
-        lastActive: serverTimestamp(),
-        online: true
-    }, { merge: true });
+    try {
+        await setDoc(userRef, {
+            uid: user.uid, // Explicitly keep the ID mapped
+            currentPage: path, 
+            lastActive: serverTimestamp(),
+            online: true
+        }, { merge: true });
+    } catch (error) {
+        console.error("Error syncing user presence:", error);
+    }
 }
 
 /**
@@ -202,9 +213,6 @@ onAuthStateChanged(auth, async (user) => {
         showAccessDenied("Authentication Required: Please sign in to access this console.");
     }
 });
-
-document.getElementById("exportBtn").addEventListener("click", exportTableToCSV);
-
 // Proactive background presence synchronization loop for active admin sessions
 setInterval(() => {
     if (auth.currentUser) {
@@ -216,3 +224,6 @@ setInterval(() => {
         });
     }
 }, 30000);
+
+document.getElementById("exportBtn").addEventListener("click", exportTableToCSV);
+

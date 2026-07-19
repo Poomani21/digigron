@@ -17,7 +17,7 @@ async function loadHTML(id,file){
 
     // after navbar loaded
     import("./header.js");
-
+    import("./page.js");
 
 }
 

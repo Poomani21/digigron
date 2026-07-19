@@ -6,6 +6,15 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 
+// ADDED: Import Firestore methods to fetch the user's document role attribute
+import { 
+    getFirestore, 
+    doc, 
+    getDoc 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const db = getFirestore(); // Initialize Firestore database instance
+
 const guest = document.getElementById("guest-links");
 const user = document.getElementById("user-links");
 const username = document.getElementById("user-name");
@@ -21,9 +30,11 @@ const logoutBtn =
     document.getElementById("logoutBtn");
 
 
+onAuthStateChanged(auth, async (user) => { // ADDED: "async" keyword so we can use "await getDoc"
 
-onAuthStateChanged(auth, (user) => {
+// onAuthStateChanged(auth, (user) => {
 
+    const adminLink = document.getElementById("adminLink");
 
     if (user) {
 
@@ -58,17 +69,17 @@ onAuthStateChanged(auth, (user) => {
                 </span>
                 `;
 
-                        }
-                        else {
+        }
+        else {
 
 
-                //             document.getElementById("verifyStatus").innerHTML =
-                //                 `
-                // <span class="notverified">
-                // ✖ Email Not Verified
-                // </span>
-                // `;
-                 document.getElementById("verifyStatus").innerHTML =
+            //             document.getElementById("verifyStatus").innerHTML =
+            //                 `
+            // <span class="notverified">
+            // ✖ Email Not Verified
+            // </span>
+            // `;
+            document.getElementById("verifyStatus").innerHTML =
                 `
                 <span class="verified">
                 ✔ Verified Account
@@ -91,6 +102,33 @@ onAuthStateChanged(auth, (user) => {
         document.getElementById("signInButton").style.setProperty("display", "none");
 
 
+        // =========================================================================
+        // CORRECTED: Safe structural role query implementation
+        // =========================================================================
+        try {
+            const userDocRef = doc(db, "users", user.uid);
+            const userDocSnap = await getDoc(userDocRef);
+
+            if (userDocSnap.exists()) {
+                const userData = userDocSnap.data(); // Defines userData from Firestore
+
+                // Enforced visibility condition matching your layout requirements
+                if (userData.role === "admin") {
+                    // Show the management link if verified as an admin
+                    if (adminLink) adminLink.style.display = "block"; 
+                } else {
+                    // Hide the link if the profile role does not match
+                    if (adminLink) adminLink.style.display = "none";
+                }
+            } else {
+                // Hide link if user data doesn't exist in Firestore collection yet
+                if (adminLink) adminLink.style.display = "none";
+            }
+        } catch (error) {
+            console.error("Error reading administrative role permissions:", error);
+            if (adminLink) adminLink.style.display = "none";
+        }
+        // =========================================================================
 
     }
 
@@ -108,7 +146,7 @@ onAuthStateChanged(auth, (user) => {
 
         document.getElementById("profileDropdown")?.style.setProperty("display", "none");
 
-        
+
 
         // // Protect pages
         // if(
@@ -125,18 +163,18 @@ onAuthStateChanged(auth, (user) => {
 
 
 
-if(profileBtn){
+if (profileBtn) {
 
-profileBtn.onclick = () => {
-
-
-profileDropdown.style.display =
-profileDropdown.style.display === "block"
-? "none"
-: "block";
+    profileBtn.onclick = () => {
 
 
-};
+        profileDropdown.style.display =
+            profileDropdown.style.display === "block"
+                ? "none"
+                : "block";
+
+
+    };
 
 }
 
@@ -149,7 +187,7 @@ logoutBtn.onclick = async () => {
     await signOut(auth);
 
     // window.location.href = "signup.html";
-        window.location.href = "index.html";
+    window.location.href = "index.html";
 
 
 
