@@ -17,10 +17,6 @@ import {
 
 const db = getFirestore(); // Initialize Firestore database instance
 
-const guest = document.getElementById("guest-links");
-const user = document.getElementById("user-links");
-const username = document.getElementById("user-name");
-
 
 const profileBtn =
     document.getElementById("profileBtn");
@@ -34,6 +30,7 @@ const logoutBtn =
 // Helper function to evaluate and toggle admin visibility safely
 async function checkAdminVisibility(currentUser) {
     const adminLink = document.getElementById("adminLink");
+    const contactUserLink = document.getElementById("contactUser");
     if (!adminLink || !currentUser) return;
 
     try {
@@ -42,26 +39,29 @@ async function checkAdminVisibility(currentUser) {
 
         if (userDocSnap.exists()) {
             const userData = userDocSnap.data();
-            console.log("userData checked:", userData);
+            // console.log("userData checked:", userData);
             if (userData.role === "admin") {
                 adminLink.style.display = "block"; 
+                contactUserLink.style.display = "block";
             } else {
                 adminLink.style.display = "none";
+                contactUserLink.style.display = "none";
             }
         } else {
             adminLink.style.display = "none";
+            contactUserLink.style.display = "none";
         }
     } catch (error) {
         console.error("Error reading administrative role permissions:", error);
         adminLink.style.display = "none";
+        contactUserLink.style.display = "none";
     }
 }
 
 onAuthStateChanged(auth, async (user) => { // ADDED: "async" keyword so we can use "await getDoc"
 
-// onAuthStateChanged(auth, (user) => {
-
     const adminLink = document.getElementById("adminLink");
+    const contactUserLink = document.getElementById("contactUser");
 
     if (user) {
 
@@ -82,39 +82,12 @@ onAuthStateChanged(auth, async (user) => { // ADDED: "async" keyword so we can u
         document.getElementById("profileEmail").textContent =
             user.email;
 
-
-
-        // verified check
-
-        if (user.emailVerified) {
-
-
-            document.getElementById("verifyStatus").innerHTML =
+        document.getElementById("verifyStatus").innerHTML =
                 `
                 <span class="verified">
                 ✔ Verified Account
                 </span>
                 `;
-
-        }
-        else {
-
-
-            //             document.getElementById("verifyStatus").innerHTML =
-            //                 `
-            // <span class="notverified">
-            // ✖ Email Not Verified
-            // </span>
-            // `;
-            document.getElementById("verifyStatus").innerHTML =
-                `
-                <span class="verified">
-                ✔ Verified Account
-                </span>
-                `;
-
-        }
-
 
         // Profile Image
 
@@ -143,7 +116,7 @@ onAuthStateChanged(auth, async (user) => { // ADDED: "async" keyword so we can u
     else {
 
         // User not logged in
-        console.log("No user");
+        // console.log("No user");
 
         document.getElementById("navbar").style.setProperty("display", "none");
         document.getElementById("signInButton").style.setProperty("display", "block");
@@ -154,6 +127,7 @@ onAuthStateChanged(auth, async (user) => { // ADDED: "async" keyword so we can u
 
         document.getElementById("profileDropdown")?.style.setProperty("display", "none");
         if (adminLink) adminLink.style.display = "none";
+        if (contactUserLink) contactUserLink.style.display = "none";
 
 
         // // Protect pages
@@ -189,10 +163,20 @@ if (profileBtn) {
 
 
 
+// Logout function
 logoutBtn.onclick = async () => {
 
-
-    await signOut(auth);
+    try {
+        if (auth.currentUser) {
+            await setDoc(doc(db, "users", auth.currentUser.uid), {
+                online: false
+            }, { merge: true });
+        }
+        await signOut(auth);
+        window.location.href = "index.html";
+    } catch (error) {
+        console.error("Logout Error:", error);
+    }
 
     // window.location.href = "signup.html";
     window.location.href = "index.html";

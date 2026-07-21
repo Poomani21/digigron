@@ -69,12 +69,12 @@ window.handleSignUp = async function (e) {
         signUpLoader.style.display = 'inline-block';
         signUpBtnText.textContent = 'Processing...';
         
-        console.log("Creating auth user...");
+        // console.log("Creating auth user...");
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-        console.log("Auth user created:", user.uid);
+        // console.log("Auth user created:", user.uid);
 
-        console.log("Writing to Firestore...");
+        // console.log("Writing to Firestore...");
         // Wait completely for the database write to finish successfully
         await setDoc(doc(db, "users", user.uid), {
             uid: user.uid,
@@ -87,7 +87,7 @@ window.handleSignUp = async function (e) {
             emailVerified: true
         });
 
-        console.log("Firestore write successful");
+        // console.log("Firestore write successful");
         
         // Update auth profile name
         await updateProfile(user, { displayName: name });
@@ -111,10 +111,22 @@ window.handleSignUp = async function (e) {
 // SIGN IN HANDLER
 window.handleSignIn = async function (e) {
     e.preventDefault();
+
+    // UI Elements
+    const signInBtn = document.getElementById('signin-btn');
+    const signInLoader = document.getElementById('signin-loader');
+    const signInBtnText = document.getElementById('signin-btn-text');
+
     const email = document.getElementById('signin-email').value;
     const password = document.getElementById('signin-password').value;
 
     try {
+
+        // 1. Activate loading state animation
+        signInBtn.disabled = true;
+        signInLoader.style.display = 'inline-block';
+        signInBtnText.textContent = 'Processing...';
+
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
@@ -133,6 +145,11 @@ window.handleSignIn = async function (e) {
     } catch (error) {
         console.error("SignIn Error:", error);
         displayMessage('signin-msg', 'The email or password is incorrect.');   
+
+         // 2. Clear loader state safely if registration fails
+        signInBtn.disabled = false;
+        signInLoader.style.display = 'none';
+        signInBtnText.textContent = 'Sign In';
      }
 };
 
@@ -153,7 +170,7 @@ window.handlePasswordReset = async function (e) {
 // Check login status observer
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        console.log("Logged in:", user.email);
+        // console.log("Logged in:", user.email);
 
         // FIX: Only auto-redirect if the user visits the page cold, NOT during form execution
         const isCurrentlySigningUp = document.getElementById('signup-card')?.classList.contains('active');
@@ -168,7 +185,7 @@ onAuthStateChanged(auth, (user) => {
         document.getElementById("signupBtn")?.style.setProperty("display", "none");
         document.getElementById("profileDropdown")?.style.setProperty("display", "block");
     } else {
-        console.log("No user session active");
+        // console.log("No user session active");
         document.getElementById("loginBtn")?.style.setProperty("display", "block");
         document.getElementById("signupBtn")?.style.setProperty("display", "block");
         document.getElementById("profileDropdown")?.style.setProperty("display", "none");

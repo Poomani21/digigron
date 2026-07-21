@@ -46,14 +46,40 @@ async function syncUserPresence(user) {
 }
 
 /**
- * Helper to process Firestore Timestamps or ISO inputs into professional view formats
+ * Helper to process Firestore Timestamps or ISO inputs into IST format (e.g., 21 Jul 2026, 11:34 am)
  */
 function formatTimestamp(timestamp) {
     if (!timestamp) return "-";
+
+    let dateObj;
     if (timestamp.seconds) {
-        return new Date(timestamp.seconds * 1000).toLocaleString();
+        dateObj = new Date(timestamp.seconds * 1000);
+    } else {
+        dateObj = new Date(timestamp);
     }
-    return new Date(timestamp).toLocaleString();
+
+    // Return "-" if date parsing fails
+    if (isNaN(dateObj.getTime())) return "-";
+
+    // Format parts explicitly to control spacing and casing
+    const formatter = new Intl.DateTimeFormat("en-IN", {
+        timeZone: "Asia/Kolkata",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+    });
+
+    const parts = formatter.formatToParts(dateObj);
+    const p = {};
+    parts.forEach(({ type, value }) => {
+        p[type] = value;
+    });
+
+    // Assemble as "21 Jul 2026, 11:34 am"
+    return `${p.day} ${p.month} ${p.year}, ${p.hour}:${p.minute} ${p.dayPeriod.toLowerCase()}`;
 }
 
 /**
@@ -74,6 +100,8 @@ function renderUsersTable(usersList) {
     }
 
     tbody.innerHTML = usersList.map(user => {
+
+        console.log("Rendering user:", user);
         const currentStatus = user.online ? "Online" : "Offline";
         return `
             <tr>

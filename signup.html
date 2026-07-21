@@ -346,7 +346,11 @@
                 <!-- <div class="reset-option">
                     <a onclick="switchCard('reset-card')">Forgot Password?</a>
                 </div> -->
-                <button type="submit" class="btn-submit">Sign In</button>
+
+                <button type="submit" class="btn-submit" id="signin-btn">
+                    <span class="loader" id="signin-loader"></span>
+                    <span id="signin-btn-text">Sign In</span>
+                </button>
             </form>
             <div class="auth-switch">
                 Don't have an account? <a onclick="switchCard('signup-card')">Sign Up</a>

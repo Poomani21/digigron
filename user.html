@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Management Console - Users</title>
+    <title>Signed Up - Users</title>
     <style>
       :root {
     /* Color Palette (Deep Dark Theme with Requested Branding Accents) */
@@ -152,6 +152,41 @@ td.font-mono {
     box-shadow: 0 0 8px var(--brand-secondary);
 }
 
+
+    /* Primary Solid Button: Back to Home */
+    .btn-home {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+        color: var(--text-dark);
+        border: none;
+        padding: 10px 18px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border-radius: 6px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease-in-out;
+        width: 100%; /* Default mobile view */
+    }
+
+    .btn-home:hover {
+        box-shadow: 0 0 16px rgba(3, 249, 121, 0.4);
+        transform: translateY(-1px);
+    }
+
+    .btn-home span {
+        font-size: 1.1rem;
+        line-height: 1;
+        transition: transform 0.2s ease;
+    }
+
+    .btn-home:hover span {
+        transform: translateX(-3px);
+    }
+
 /* ==========================================
    MEDIA QUERIES (Desktop Restructuring)
    ========================================== */
@@ -171,6 +206,9 @@ td.font-mono {
     .btn-export {
         width: auto; /* Inline scaling for larger screens */
     }
+    .btn-home, .btn-export {
+            width: auto;
+        }
     
     h2 {
         font-size: 1.5rem;
@@ -191,8 +229,14 @@ td.font-mono {
 </head>
 <body>
 
+
+
     <div class="container">
         <div class="header-actions">
+            <a href="index.html" class="btn-home">
+                    <span>←</span>Home
+                </a>
+
             <h2>Registered Users</h2>
             <button id="exportBtn" class="btn-export">Export to CSV</button>
         </div>

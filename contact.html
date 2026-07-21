@@ -166,13 +166,20 @@
      data-sitekey="6LeoGVMtAAAAAPQ8KpM78efHKm98qdY6aFR4GYDu">
     </div>
 
-    <button class="w-full rounded-full bg-primary text-primary-foreground py-4 font-medium hover:opacity-90 transition">Send inquiry →</button>
+    <!-- Updated Submit Button -->
+  <button type="submit" id="contact-submit-btn" class="btn-submit w-full rounded-full bg-primary text-primary-foreground py-4 font-medium hover:opacity-90 transition">
+    <span class="loader" id="contact-loader"></span>
+    <span id="contact-btn-text">Send inquiry →</span>
+  </button>
   </form>
 
-  <div data-contact-thanks class="lg:col-span-3 py-20 text-center" style="display:none;">
+ <div data-contact-thanks class="lg:col-span-3 py-20 text-center" style="display:none;">
     <div class="font-display text-3xl">Thank you.</div>
     <p class="mt-3 text-muted-foreground">We'll be in your inbox within one business day.</p>
-  </div>
+    <p class="mt-4 text-sm text-muted-foreground">
+        This window will reset in <span data-countdown-timer class="font-bold text-primary">6</span> seconds...
+    </p>
+</div>
 </section>
 
 </main>
@@ -255,7 +262,10 @@
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="js/config.js"></script>
-<script src="js/script.js"></script>
+<!-- <script src="js/script.js"></script> -->
+<!-- Add type="module" here -->
+<script type="module" src="js/script.js"></script>
+
 <script>
 emailjs.init();
 </script>
