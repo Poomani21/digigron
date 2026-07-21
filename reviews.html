@@ -126,7 +126,13 @@
           <label class="text-xs uppercase tracking-widest text-muted-foreground">Your review</label>
           <textarea name="text" required rows="5" class="mt-1 w-full bg-background border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary resize-none" placeholder="What stood out about working with us?"></textarea>
         </div>
-<button type="submit" class="w-full rounded-full bg-primary text-primary-foreground py-2.5 text-sm font-medium hover:opacity-90 transition">Publish review</button>      </form>
+
+        <!-- Updated Button with Loading State -->
+        <button type="submit" id="review-submit-btn" class="btn-submit w-full rounded-full bg-primary text-primary-foreground py-2.5 text-sm font-medium hover:opacity-90 transition">
+          <span class="loader" id="review-loader"></span>
+          <span id="review-btn-text">Publish review</span>
+        </button>
+</form>
     </div>
   </div>
 
@@ -226,6 +232,8 @@
 
 </div>
 <script src="js/config.js"></script>
-<script src="js/script.js"></script>
+<!-- <script src="js/script.js"></script> -->
+ <!-- Add type="module" here -->
+<script type="module" src="js/script.js"></script>
 </body>
 </html>

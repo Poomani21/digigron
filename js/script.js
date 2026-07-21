@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // Initialize Firebase using your credentials
 const firebaseConfig = {
@@ -16,6 +16,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 var db = getFirestore(app);
 
+
 /* DigiGron site scripts — vanilla module. */
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init);
@@ -28,7 +29,7 @@ function init() {
   wireMobileMenu();
   injectFooterYear();
   wireContactForm();
-  wireReviews();
+  wireReviews(db); // FIXED: Pass db here
   wireRevealOnScroll();
 }
 
@@ -238,17 +239,25 @@ function wireContactForm() {
   });
 }
 
-/* Reviews — localStorage-backed list ------------------------------------- */
-function wireReviews() {
+/* Reviews — Firestore-backed list ------------------------------------- */
+function wireReviews(dbInstance) {
+  // Use passed instance or fallback to top-level db
+  var targetDb = dbInstance || db;
+
   var form = document.querySelector("form[data-review-form]");
   var list = document.querySelector("[data-review-list]");
   var empty = document.querySelector("[data-review-empty]");
   var count = document.querySelector("[data-review-count]");
-  if (!form || !list) return;
-  var KEY = "pulse_customer_reviews_v1";
+  var submitBtn = document.getElementById("review-submit-btn");
+  var loader = document.getElementById("review-loader");
+  var btnText = document.getElementById("review-btn-text");
 
+  if (!form || !list) return;
+
+  var COLLECTION_NAME = "customer_reviews";
   var current = 5;
   var stars = form.querySelectorAll("[data-star]");
+
   function paintStars(n) {
     stars.forEach(function (btn, i) {
       var svg = btn.querySelector("svg");
@@ -258,6 +267,7 @@ function wireReviews() {
       svg.style.fill = on ? "var(--primary)" : "none";
     });
   }
+
   stars.forEach(function (btn, i) {
     btn.addEventListener("mouseenter", function () { paintStars(i + 1); });
     btn.addEventListener("mouseleave", function () { paintStars(current); });
@@ -265,28 +275,58 @@ function wireReviews() {
   });
   paintStars(current);
 
-  function load() {
-    try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { return []; }
+  function setLoading(isLoading) {
+    if (!submitBtn) return;
+    if (isLoading) {
+      submitBtn.disabled = true;
+      if (loader) loader.style.display = "inline-block";
+      if (btnText) btnText.textContent = "Publishing...";
+    } else {
+      submitBtn.disabled = false;
+      if (loader) loader.style.display = "none";
+      if (btnText) btnText.textContent = "Publish review";
+    }
   }
-  function save(arr) { localStorage.setItem(KEY, JSON.stringify(arr)); }
 
-  function render() {
-    var items = load();
+  // Fetch reviews from Firestore
+  async function loadAndRender() {
+    try {
+      var q = query(collection(targetDb, COLLECTION_NAME), orderBy("createdAt", "desc"));
+      var querySnapshot = await getDocs(q);
+      var items = [];
+
+      querySnapshot.forEach(function (doc) {
+        items.push({ id: doc.id, ...doc.data() });
+      });
+
+      render(items);
+    } catch (e) {
+      console.error("Error loading reviews from Firestore:", e);
+    }
+  }
+
+  function render(items) {
     if (count) count.textContent = String(items.length) + " review" + (items.length === 1 ? "" : "s");
+    
     if (!items.length) {
       if (empty) empty.style.display = "";
       list.innerHTML = "";
       list.style.display = "none";
       return;
     }
+
     if (empty) empty.style.display = "none";
     list.style.display = "";
+
     list.innerHTML = items.map(function (r) {
-      var date = new Date(r.date).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+      var dateObj = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate() : new Date(r.date || Date.now());
+      var date = dateObj.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+      
       var starsHtml = "";
-      for (var i = 0; i < r.rating; i++) {
+      for (var i = 0; i < (r.rating || 5); i++) {
         starsHtml += '<svg xmlns="http://www.w3.org/2000/svg" class="size-4 fill-current" viewBox="0 0 24 24" stroke="currentColor" fill="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
       }
+
       return '<li class="rounded-2xl border border-border bg-surface/50 p-7 shadow-card">' +
         '<div class="flex items-center justify-between"><div class="flex gap-0.5 text-primary">' + starsHtml + '</div>' +
         '<time class="text-xs text-muted-foreground">' + escapeHtml(date) + '</time></div>' +
@@ -297,23 +337,43 @@ function wireReviews() {
     }).join("");
   }
 
-  form.addEventListener("submit", function (e) {
+  // Handle Form Submission
+  form.addEventListener("submit", async function (e) {
     e.preventDefault();
+    
     var name = (form.querySelector("[name=name]").value || "").trim();
     var role = (form.querySelector("[name=role]").value || "").trim();
     var text = (form.querySelector("[name=text]").value || "").trim();
+
     if (!name || !text) return;
-    var review = {
-      id: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
-      name: name, role: role || undefined, rating: current, text: text,
-      date: new Date().toISOString(),
+
+    setLoading(true);
+
+    var reviewPayload = {
+      name: name,
+      role: role || "",
+      rating: current,
+      text: text,
+      createdAt: serverTimestamp(),
+      date: new Date().toISOString()
     };
-    var items = load(); items.unshift(review); save(items);
-    form.reset(); current = 5; paintStars(current);
-    render();
+
+    try {
+      await addDoc(collection(targetDb, COLLECTION_NAME), reviewPayload);
+      form.reset();
+      current = 5;
+      paintStars(current);
+      await loadAndRender();
+    } catch (error) {
+      console.error("Error writing review to Firestore:", error);
+      alert("Failed to submit review. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   });
 
-  render();
+  // Initial load
+  loadAndRender();
 }
 
 function escapeHtml(s) {
